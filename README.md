@@ -1,64 +1,54 @@
-# Minecraft Cross Backend Mod/Plugin Template
+# NoPlayerStop
 
-A robust, multi-loader template for developing Minecraft mods and plugins across **Fabric**, **NeoForge**, and **Paper (Bukkit)** using a shared **Core** module to minimize code duplication.
+NoPlayerStop is a lightweight utility that enables your server to operate on demand. By automatically shutting down when no players are active, it transforms your setup into a setup into a **serverless-like environment**, saving CPU and RAM resources during downtime.
 
-## Getting Started
+## Supported Platforms
 
-### 1. Initialize the Project
+* **Fabric**
+* **NeoForge**
+* **Paper / Spigot / Purpur**
+* **Velocity**
 
-You can quickly set up your project using the automated installers. These scripts will prompt you for project metadata (Name, ID, Version, Group) and refactor the package structure automatically.
+-----
 
-#### Unix-based (Linux, macOS, WSL)
+## Serverless Infrastructure with MC-Gate
 
-Run the following command in your terminal:
+This mod is designed to work as the perfect companion for [mc-gate](https://github.com/SirCesarium/mc-gate).
 
-```bash
-curl -sSL https://raw.githubusercontent.com/SirCesarium/mc-cross-template/installer/setup.sh -o setup.sh && bash setup.sh; rm -f setup.sh
-```
+While **NoPlayerStop** handles the automated shutdown when your server is empty, **mc-gate** acts as a high-performance async proxy that stays online. When a player attempts to join or pings the server, **mc-gate** detects the traffic and executes a command to wake the server back up.
 
-#### Windows (PowerShell)
+Together, they create a fully automated **On-Demand** ecosystem: your server only consumes hardware resources when someone is actually playing.
 
-Run the following command in PowerShell:
+-----
 
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/SirCesarium/mc-cross-template/installer/setup.ps1'))
-```
+## Key Features
 
-### 2. Manual Setup
-
-Alternatively, you can:
-
-- Click the **"Use this template"** button on GitHub to create a new repository.
-- Clone the repository manually: `git clone https://github.com/SirCesarium/mc-cross-template.git`
-
-## Project Structure
-
-- `core/`: Contains the common logic, API wrappers, and shared code.
-- `fabric/`: Fabric-specific implementation and resources.
-- `neoforge/`: NeoForge-specific implementation and resources.
-- `paper/`: Paper/Bukkit-specific implementation and resources.
-
-## Building and Distribution
-
-The project includes a custom task to build all platforms and collect the artifacts in a single directory.
-
-To build all JARs, run:
-
-```bash
-./gradlew buildAll
-```
-
-The resulting files will be located in the `dist/` folder with the following naming convention:
-`ARCHIVES_NAME-VERSION-LOADER.jar`
+* **Smart Idle Detection**: Monitors player activity and triggers a shutdown sequence only when the server is truly empty.
+* **Customizable Grace Period**: Configurable delays to ensure the server doesn't shut down during quick relogs.
+* **Live Countdown**: Provides real-time warnings in the console before the final shutdown occurs.
+* **Webhook Integration**: Send automated notifications to **Discord** or custom web services the moment the server goes offline.
+* **Native Performance**: Built to be as lightweight as possible with zero impact on tick rates or game performance.
 
 ## Configuration
 
-Metadata such as versions and dependencies are managed in `gradle.properties`.
+The configuration file is generated automatically on the first run. You can adjust the following parameters:
 
-```properties
-archives_name=my_mod
-mod_name=MyMod
-mod_version=1.0.0
-maven_group=com.example
-minecraft_version=1.21.1
-```
+* `enabled`: Toggle the entire system on or off.
+* `shutdown-delay`: How many seconds to wait after the last player leaves.
+* `warning-seconds`: When to start broadcasting shutdown warnings.
+* `min-players`: The player count threshold to start the timer (usually 0).
+* `enable-webhooks`: Enable or disable external notifications.
+* `webhook-url`: Your Discord or custom API endpoint.
+* `webhook-body`: The JSON payload to send, supporting variables like `%time%` and `%last_player_active%`.
+
+## Building from Source
+
+If you prefer to compile the binaries yourself, use the included Gradle wrapper:
+
+1.  Clone the repository.
+2.  Execute `./gradlew buildAll`.
+3.  The resulting jars for all platforms will be located in the `dist/` folder.
+
+## License
+
+This project is licensed under the **MIT License**.
