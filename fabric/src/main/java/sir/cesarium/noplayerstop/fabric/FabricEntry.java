@@ -1,11 +1,26 @@
 package sir.cesarium.noplayerstop.fabric;
 
 import net.fabricmc.api.ModInitializer;
-import com.example.ModCoreLogic;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import sir.cesarium.noplayerstop.NoPlayerStopCore;
 
 public class FabricEntry implements ModInitializer {
-  @Override
-  public void onInitialize() {
-    System.out.println(ModCoreLogic.HELLO_WORLD);
-  }
+    private final FabricLauncher launcher = new FabricLauncher();
+    private NoPlayerStopCore core;
+
+    @Override
+    public void onInitialize() {
+        FabricConfig config = new FabricConfig();
+        this.core = new NoPlayerStopCore(launcher, config);
+
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            launcher.setServer(server);
+            core.onTick();
+        });
+
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            launcher.setLastPlayerName(handler.getPlayer().getName().getString());
+        });
+    }
 }

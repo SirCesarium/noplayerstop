@@ -6,38 +6,44 @@ base {
     archivesName = "${project.archives_name}-${project.mod_version}-fabric"
 }
 
+// --- Dependencies ---
 dependencies {
     minecraft "net.minecraft:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-    
+
     implementation project(':core')
 }
 
+// --- Loom Configuration ---
 loom {
-    def runDirName = "../../run/fabric"
-    
     runs {
         server {
             server()
-            runDir = runDirName
+            runDir "../run/fabric"
         }
     }
 }
 
-tasks.register('run') {
-    dependsOn 'runServer'
+// --- Packaging ---
+jar {
+    from project(':core').sourceSets.main.output
 }
 
+tasks.named('remapJar') {
+    from project(':core').sourceSets.main.output
+}
+
+// --- Execution Tasks ---
 tasks.named('runServer') {
     doFirst {
-        def runDir = file("../../run/fabric")
+        def runDir = rootProject.file("run/fabric")
         runDir.mkdirs()
         new File(runDir, "eula.txt").text = "eula=true"
     }
 }
 
-jar {
-    from project(':core').sourceSets.main.output
+tasks.register('run') {
+    dependsOn 'runServer'
 }
