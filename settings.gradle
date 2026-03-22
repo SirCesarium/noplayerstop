@@ -8,4 +8,4 @@ pluginManagement {
 }
 
 rootProject.name = 'noplayerstop'
-include 'core', 'neoforge', 'fabric', 'paper'
+include 'core', 'neoforge', 'fabric', 'paper', 'velocity'
