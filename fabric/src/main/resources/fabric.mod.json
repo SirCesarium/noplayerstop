@@ -6,11 +6,10 @@
   "description": "${description}",
   "authors": ["${author}"],
   "contact": {
-    "homepage": "https://github.com/SirCesarium/mc-cross-template",
-    "sources": "https://github.com/SirCesarium/mc-cross-template"
+    "homepage": "https://github.com/SirCesarium/noplayerstop",
+    "sources": "https://github.com/SirCesarium/noplayerstop"
   },
   "license": "MIT",
-  "icon": "assets/${id}/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": ["${group}.fabric.FabricEntry"]
