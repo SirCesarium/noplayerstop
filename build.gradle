@@ -14,13 +14,27 @@ tasks.register('buildAll') {
         distDir.mkdirs()
 
         subprojects.findAll { it.name != "core" }.each { sub ->
-            def jarTask = sub.tasks.findByName('remapJar') ?: sub.tasks.findByName('jar')
-            if (jarTask != null && jarTask.archiveFile.get().asFile.exists()) {
+            def libsDir = sub.layout.buildDirectory.dir("libs").get().asFile
+            def finalJar = null
+
+            if (sub.name == "paper") {
+                def reobfJar = libsDir.listFiles()?.find { it.name.endsWith(".jar") && !it.name.contains("-dev") && !it.name.contains("-sources") }
+                def devJar = libsDir.listFiles()?.find { it.name.endsWith("-dev.jar") }
+
+                finalJar = reobfJar ?: devJar
+            } else {
+                def jarTask = sub.tasks.findByName('remapJar') ?: sub.tasks.findByName('jar')
+                finalJar = jarTask?.archiveFile?.get()?.asFile
+            }
+
+            if (finalJar != null && finalJar.exists()) {
+                def targetName = finalJar.name.replace("-dev", "")
                 copy {
-                    from jarTask.archiveFile
+                    from finalJar
                     into distDir
+                    rename { targetName }
                 }
-                println "Collected: ${jarTask.archiveFile.get().asFile.name}"
+                println "Collected: ${targetName}"
             }
         }
     }
@@ -57,28 +71,29 @@ subprojects {
 
         // --- Resource Processing ---
         def resourceTargets = [
-                "id": id,
-                "version": project.mod_version,
-                "name": name,
-                "description": project.mod_description,
-                "author": project.mod_author,
-                "apiVersion": project.minecraft_version.split('\\.').take(2).join('.'),
+                "id"              : id,
+                "version"         : project.mod_version,
+                "name"            : name,
+                "description"     : project.mod_description,
+                "author"          : project.mod_author,
+                "apiVersion"      : project.minecraft_version.split('\\.').take(2).join('.'),
                 "minecraftVersion": project.minecraft_version,
-                "loaderVersion": project.fabric_loader_version,
-                "neoVersion": project.neoforge_version,
-                "group": group
+                "loaderVersion"   : project.fabric_loader_version,
+                "neoVersion"      : project.neoforge_version,
+                "group"           : group
         ]
 
         processResources {
             inputs.properties(resourceTargets)
+            duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
-            filesMatching(["fabric.mod.json", "META-INF/neoforge.mods.toml", "paper-plugin.yml"]) {
+            from(sourceSets.main.resources.srcDirs) {
+                include "fabric.mod.json", "META-INF/neoforge.mods.toml", "paper-plugin.yml"
                 expand(resourceTargets)
             }
 
             from(sourceSets.main.resources.srcDirs) {
-                include "**/*.yml", "**/*.properties", "**/*.json", "**/*.toml"
-                duplicatesStrategy = DuplicatesStrategy.INCLUDE
+                exclude "fabric.mod.json", "META-INF/neoforge.mods.toml", "paper-plugin.yml"
             }
         }
 
