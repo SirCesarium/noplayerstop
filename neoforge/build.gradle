@@ -42,3 +42,7 @@ tasks.named('runServer') {
 tasks.register('run') {
     dependsOn 'runServer'
 }
+
+tasks.named('jar', Jar) {
+    from project(':core').sourceSets.main.output
+}
