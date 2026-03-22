@@ -1,6 +1,6 @@
 # NoPlayerStop
 
-NoPlayerStop is a lightweight utility that enables your server to operate on demand. By automatically shutting down when no players are active, it transforms your setup into a setup into a **serverless-like environment**, saving CPU and RAM resources during downtime.
+NoPlayerStop is a lightweight utility that enables your server to operate on demand. By automatically shutting down when no players are active, it transforms your setup into a **serverless-like environment**, saving CPU and RAM resources during downtime.
 
 ## Supported Platforms
 
