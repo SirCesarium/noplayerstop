@@ -4,3 +4,8 @@ main: ${group}.paper.PaperEntry
 api-version: "${apiVersion}"
 author: "${author}"
 description: "${description}"
+
+permissions:
+  noplayerstop.admin:
+    description: Manages NoPlayerStop
+    default: op
