@@ -22,7 +22,6 @@ public class NoPlayerStopCore {
     private boolean paused = false;
     private long lastTestTime = 0;
 
-    private static final String PREFIX = "§8[§6NoPlayerStop§8] §f";
     private static final String INFO = "§bℹ §f";
     private static final String SUCCESS = "§a✔ §f";
     private static final String WARN = "§e⚠ §f";
@@ -143,7 +142,7 @@ public class NoPlayerStopCore {
     }
 
     public String getStatus() {
-        if (config.isDisabled()) return WARN + "System is §cDISABLED§f in config.yml";
+        if (config.isDisabled()) return WARN + "System is §cDISABLED§f in config file";
         if (paused) return WARN + "System is currently §ePAUSED§f.";
         if (shuttingDown) return "§4§lSHUTDOWN IN PROGRESS...";
 
@@ -160,7 +159,7 @@ public class NoPlayerStopCore {
 
     public String testWebhook() {
         if (!config.isWebhookTestCommandEnabled()) {
-            return "§cWebhook test command is §ndisabled§f check config.yaml";
+            return "§cWebhook test command is §ndisabled§f check config file";
         }
 
         long now = System.currentTimeMillis();
