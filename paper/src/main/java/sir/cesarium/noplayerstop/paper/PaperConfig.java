@@ -18,8 +18,8 @@ public class PaperConfig implements IModConfig {
     }
 
     @Override
-    public boolean isEnabled() {
-        return getConfig().getBoolean("enabled", true);
+    public boolean isDisabled() {
+        return !getConfig().getBoolean("enabled", true);
     }
 
     @Override
@@ -43,6 +43,11 @@ public class PaperConfig implements IModConfig {
     }
 
     @Override
+    public boolean isWebhookTestCommandEnabled() {
+        return getConfig().getBoolean("webhook-test-command-enabled", false);
+    }
+
+    @Override
     public String getWebhookUrl() {
         return getConfig().getString("webhook-url", "http://127.0.0.1:8000");
     }
@@ -50,5 +55,10 @@ public class PaperConfig implements IModConfig {
     @Override
     public String getWebhookBody() {
         return getConfig().getString("webhook-body", "{\"content\": \"Server shutting down. Uptime: %time%. Last player: %last_player_active%\"}");
+    }
+
+    @Override
+    public void reload() {
+        plugin.reloadConfig();
     }
 }
