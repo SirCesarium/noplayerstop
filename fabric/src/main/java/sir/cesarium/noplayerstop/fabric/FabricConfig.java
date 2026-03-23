@@ -32,6 +32,11 @@ public class FabricConfig implements IModConfig {
         }
     }
 
+    @Override
+    public void reload() {
+        load();
+    }
+
     private void save() {
         try (BufferedWriter writer = Files.newBufferedWriter(configPath, StandardCharsets.UTF_8)) {
             writer.write("# ------------------------------------------------------------\n");
@@ -57,6 +62,10 @@ public class FabricConfig implements IModConfig {
             writer.write("# Whether to send a JSON POST request when the server shuts down.\n");
             writeProp(writer, "enable-webhooks", "false");
 
+            writer.write("# Whether to allow the /nps test-webhook command.\n");
+            writer.write("# Set false to prevent potential spam/abuse by administrators.\n");
+            writeProp(writer, "webhook-test-command-enabled", "false");
+
             writer.write("\n# Target URL for the webhook (e.g. Discord).\n");
             writeProp(writer, "webhook-url", "http://127.0.0.1:8000");
 
@@ -74,13 +83,45 @@ public class FabricConfig implements IModConfig {
         writer.write(key + "=" + value + "\n");
     }
 
-    @Override public boolean isDisabled() { return !Boolean.parseBoolean(properties.getProperty("enabled", "true")); }
-    @Override public int getShutdownDelay() { return getInt("shutdown-delay", 300); }
-    @Override public int getWarningTime() { return getInt("warning-seconds", 30); }
-    @Override public int getMinPlayers() { return getInt("min-players", 0); }
-    @Override public boolean isWebhookEnabled() { return Boolean.parseBoolean(properties.getProperty("enable-webhooks", "false")); }
-    @Override public String getWebhookUrl() { return properties.getProperty("webhook-url", "http://127.0.0.1:8000"); }
-    @Override public String getWebhookBody() { return properties.getProperty("webhook-body", "{\"content\": \"...\"}"); }
+    @Override
+    public boolean isDisabled() {
+        return !Boolean.parseBoolean(properties.getProperty("enabled", "true"));
+    }
+
+    @Override
+    public int getShutdownDelay() {
+        return getInt("shutdown-delay", 300);
+    }
+
+    @Override
+    public int getWarningTime() {
+        return getInt("warning-seconds", 30);
+    }
+
+    @Override
+    public int getMinPlayers() {
+        return getInt("min-players", 0);
+    }
+
+    @Override
+    public boolean isWebhookEnabled() {
+        return Boolean.parseBoolean(properties.getProperty("enable-webhooks", "false"));
+    }
+
+    @Override
+    public boolean isWebhookTestCommandEnabled() {
+        return Boolean.parseBoolean(properties.getProperty("webhook-test-command-enabled", "false"));
+    }
+
+    @Override
+    public String getWebhookUrl() {
+        return properties.getProperty("webhook-url", "http://127.0.0.1:8000");
+    }
+
+    @Override
+    public String getWebhookBody() {
+        return properties.getProperty("webhook-body", "{\"content\": \"...\"}");
+    }
 
     private int getInt(String key, int def) {
         try {
