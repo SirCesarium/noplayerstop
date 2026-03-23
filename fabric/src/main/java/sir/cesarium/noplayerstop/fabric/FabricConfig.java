@@ -74,7 +74,7 @@ public class FabricConfig implements IModConfig {
         writer.write(key + "=" + value + "\n");
     }
 
-    @Override public boolean isEnabled() { return Boolean.parseBoolean(properties.getProperty("enabled", "true")); }
+    @Override public boolean isDisabled() { return !Boolean.parseBoolean(properties.getProperty("enabled", "true")); }
     @Override public int getShutdownDelay() { return getInt("shutdown-delay", 300); }
     @Override public int getWarningTime() { return getInt("warning-seconds", 30); }
     @Override public int getMinPlayers() { return getInt("min-players", 0); }

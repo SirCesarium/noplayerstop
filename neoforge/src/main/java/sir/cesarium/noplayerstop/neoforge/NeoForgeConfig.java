@@ -50,7 +50,7 @@ public class NeoForgeConfig implements IModConfig {
         builder.pop();
     }
 
-    @Override public boolean isEnabled() { return enabled.get(); }
+    @Override public boolean isDisabled() { return enabled.get(); }
     @Override public int getShutdownDelay() { return shutdownDelay.get(); }
     @Override public int getWarningTime() { return warningSeconds.get(); }
     @Override public boolean isWebhookEnabled() { return enableWebhooks.get(); }

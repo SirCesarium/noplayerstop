@@ -6,7 +6,7 @@ tasks.register('buildAll') {
     group = "build"
     description = "Assembles and collects all platform jars into the dist directory"
 
-    dependsOn ":fabric:assemble", ":neoforge:assemble", ":paper:assemble", ":velocity:assemble"
+    dependsOn ":fabric:assemble", ":neoforge:assemble", ":paper:assemble"
 
     doLast {
         def distDir = file("dist")
