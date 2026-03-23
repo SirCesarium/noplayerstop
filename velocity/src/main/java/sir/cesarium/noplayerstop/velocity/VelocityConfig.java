@@ -40,9 +40,11 @@ public class VelocityConfig implements IModConfig {
         reload();
     }
 
+    @Override
     public void reload() {
         try {
             root = loader.load();
+            logger.info("Configuration file loaded successfully.");
         } catch (IOException e) {
             logger.error("Failed to load configuration file", e);
         }
