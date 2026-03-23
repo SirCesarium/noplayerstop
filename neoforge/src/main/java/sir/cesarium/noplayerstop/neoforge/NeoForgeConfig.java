@@ -1,5 +1,6 @@
 package sir.cesarium.noplayerstop.neoforge;
 
+import net.neoforged.fml.config.ConfigTracker;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import sir.cesarium.noplayerstop.api.IModConfig;
 
@@ -9,6 +10,7 @@ public class NeoForgeConfig implements IModConfig {
     private final ModConfigSpec.IntValue warningSeconds;
     private final ModConfigSpec.IntValue minPlayers;
     private final ModConfigSpec.BooleanValue enableWebhooks;
+    private final ModConfigSpec.BooleanValue enableWebhookTestCommand;
     private final ModConfigSpec.ConfigValue<String> webhookUrl;
     private final ModConfigSpec.ConfigValue<String> webhookBody;
 
@@ -36,8 +38,13 @@ public class NeoForgeConfig implements IModConfig {
         builder.push("WebhookNotifications");
 
         enableWebhooks = builder
-                .comment("Whether to send a JSON POST request when the server shuts down.")
+                .comment("Whether to allow the /nps test-webhook command.")
+                .comment("Set false to prevent potential spam/abuse by administrators.")
                 .define("enable-webhooks", false);
+
+        enableWebhookTestCommand = builder
+                .comment("Whether to send a JSON POST request when the server shuts down.")
+                .define("webhook-test-command-enabled", false);
 
         webhookUrl = builder
                 .comment("Target URL for the webhook (e.g. Discord).")
@@ -50,11 +57,47 @@ public class NeoForgeConfig implements IModConfig {
         builder.pop();
     }
 
-    @Override public boolean isDisabled() { return enabled.get(); }
-    @Override public int getShutdownDelay() { return shutdownDelay.get(); }
-    @Override public int getWarningTime() { return warningSeconds.get(); }
-    @Override public boolean isWebhookEnabled() { return enableWebhooks.get(); }
-    @Override public String getWebhookUrl() { return webhookUrl.get(); }
-    @Override public String getWebhookBody() { return webhookBody.get(); }
-    @Override public int getMinPlayers() { return minPlayers.get(); }
+    @Override
+    public boolean isDisabled() {
+        return !enabled.get();
+    }
+
+    @Override
+    public int getShutdownDelay() {
+        return shutdownDelay.get();
+    }
+
+    @Override
+    public int getWarningTime() {
+        return warningSeconds.get();
+    }
+
+    @Override
+    public boolean isWebhookEnabled() {
+        return enableWebhooks.get();
+    }
+
+    @Override
+    public boolean isWebhookTestCommandEnabled() {
+        return enableWebhookTestCommand.get();
+    }
+
+    @Override
+    public String getWebhookUrl() {
+        return webhookUrl.get();
+    }
+
+    @Override
+    public String getWebhookBody() {
+        return webhookBody.get();
+    }
+
+    @Override
+    public void reload() {
+    }
+
+    @Override
+    public int getMinPlayers() {
+        return minPlayers.get();
+    }
 }

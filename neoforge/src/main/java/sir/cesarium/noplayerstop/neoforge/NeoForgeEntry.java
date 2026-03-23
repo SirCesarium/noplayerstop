@@ -26,6 +26,8 @@ public class NeoForgeEntry {
 
         NeoForge.EVENT_BUS.addListener(this::onServerTick);
         NeoForge.EVENT_BUS.addListener(this::onPlayerLeave);
+
+        NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
     }
 
     private void onServerTick(ServerTickEvent.Post event) {
@@ -35,5 +37,9 @@ public class NeoForgeEntry {
 
     private void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
         launcher.setLastPlayerName(event.getEntity().getName().getString());
+    }
+
+    private void onRegisterCommands(net.neoforged.neoforge.event.RegisterCommandsEvent event) {
+        NeoForgeMainCommand.register(event.getDispatcher(), core);
     }
 }
