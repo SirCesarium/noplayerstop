@@ -159,7 +159,7 @@ public class NoPlayerStopCore {
     }
 
     public String testWebhook() {
-        if (config.isWebhookTestCommandEnabled()) {
+        if (!config.isWebhookTestCommandEnabled()) {
             return "§cWebhook test command is §ndisabled§f check config.yaml";
         }
 
