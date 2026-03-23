@@ -49,8 +49,8 @@ public class VelocityConfig implements IModConfig {
     }
 
     @Override
-    public boolean isEnabled() {
-        return root.node("enabled").getBoolean(true);
+    public boolean isDisabled() {
+        return !root.node("enabled").getBoolean(true);
     }
 
     @Override
@@ -71,6 +71,11 @@ public class VelocityConfig implements IModConfig {
     @Override
     public boolean isWebhookEnabled() {
         return root.node("enable-webhooks").getBoolean(false);
+    }
+
+    @Override
+    public boolean isWebhookTestCommandEnabled() {
+        return root.node("webhook-test-command-enabled").getBoolean(false);
     }
 
     @Override
