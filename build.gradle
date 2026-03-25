@@ -6,7 +6,7 @@ tasks.register('buildAll') {
     group = "build"
     description = "Assembles and collects all platform jars into the dist directory"
 
-    dependsOn ":fabric:assemble", ":neoforge:assemble", ":paper:assemble"
+    dependsOn ":fabric:remapJar", ":neoforge:jar", ":paper:reobfJar"
 
     doLast {
         def distDir = file("dist")
@@ -14,26 +14,28 @@ tasks.register('buildAll') {
         distDir.mkdirs()
 
         subprojects.findAll { it.name != "core" }.each { sub ->
-            def libsDir = sub.layout.buildDirectory.dir("libs").get().asFile
             def finalJar = null
 
             if (sub.name == "paper") {
-                def reobfJar = libsDir.listFiles()?.find { it.name.endsWith(".jar") && !it.name.contains("-dev") && !it.name.contains("-sources") }
-                def devJar = libsDir.listFiles()?.find { it.name.endsWith("-dev.jar") }
-                finalJar = reobfJar ?: devJar
+                def reobfTask = sub.tasks.findByName('reobfJar')
+                finalJar = reobfTask?.outputJar?.get()?.asFile ?: sub.tasks.findByName('jar')?.archiveFile?.get()?.asFile
             } else {
                 def jarTask = sub.tasks.findByName('remapJar') ?: sub.tasks.findByName('jar')
                 finalJar = jarTask?.archiveFile?.get()?.asFile
             }
 
             if (finalJar != null && finalJar.exists()) {
-                def targetName = finalJar.name.replace("-dev", "")
-                copy {
-                    from finalJar
-                    into distDir
-                    rename { targetName }
+                if (finalJar.name.contains(sub.mod_version)) {
+                    def targetName = finalJar.name.replace("-dev", "")
+                    copy {
+                        from finalJar
+                        into distDir
+                        rename { targetName }
+                    }
+                    println "Collected: ${targetName}"
+                } else {
+                    println "Skipping old JAR: ${finalJar.name} (Current: ${sub.mod_version})"
                 }
-                println "Collected: ${targetName}"
             }
         }
     }
